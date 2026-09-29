@@ -198,7 +198,8 @@
         .analysis-table { width: 100%; min-width: 900px; border-collapse: collapse; font-size: 18px; margin: 4px 0; }
         .analysis-table.wide { min-width: 900px; }
         .analysis-table.profit-tbl { font-size: 15px; min-width: 0; } /* 经营利润表：无最小宽度，避免出现横向拖动条 */
-        .analysis-table.profit-tbl th, .analysis-table.profit-tbl td { white-space: normal; } /* 允许换行，表格始终铺满不溢出 */
+        .analysis-table.profit-tbl td { white-space: normal; } /* 数据允许换行，表格始终铺满不溢出 */
+        .analysis-table.profit-tbl th { white-space: nowrap; } /* 表头不换行，保持单行 */
         /* v1.30.251：月份列必须单行（"2026年9月" 不许断成 "2026/年9/月" 三行）。
            抬一级优先级覆盖上面的 white-space:normal；列宽不足时整表横向滚动，而不是把月份压成竖排 */
         .analysis-table.profit-tbl th:first-child,
@@ -1007,12 +1008,12 @@
         .profit-tables-row > .card { min-width: 0; margin-top: 0; }
         .profit-tables-row .profit-scroll { overflow: auto; }
         .profit-tables-row .profit-table { min-width: 820px; width: 100%; border-collapse: collapse; table-layout: fixed; }
-        /* 产品明细表：14 列且「单方EBITDA / EBITDA合计」长表头易被截断，单独紧凑化 */
+        /* 产品明细表：14 列且「单方息税折旧前利润 / 息税折旧前利润合计」长表头易被截断，单独紧凑化 */
         .profit-tables-row.profit-detail-row .profit-table { min-width: 720px; }
         .profit-tables-row.profit-detail-row .profit-table th,
         .profit-tables-row.profit-detail-row .profit-table td { font-size: 12px !important; padding: 6px 3px !important; }
         /* 整体往左移：让产品明细 card 溢出 .page 左右 padding 范围，充分使用视口宽度，
-           让最后两列「单方EBITDA / EBITDA合计」不再被裁切 */
+           让最后两列「单方息税折旧前利润 / 息税折旧前利润合计」不再被裁切 */
         .profit-tables-row.profit-detail-row { margin-left: -10px; margin-right: -10px; }
         .profit-tables-row .profit-table th { text-align: right; vertical-align: middle; padding: 8px 4px !important; line-height: 1.3 !important; height: 34px; white-space: nowrap; overflow: hidden; font-size: 13px; }
         .profit-tables-row .profit-table th small { display: block; font-size: 11px; color: #888; font-weight: 400; }
@@ -1989,7 +1990,7 @@
             <div class="stats-bar profit-stats-bar" data-page-node-id="zdcx4XwICX6seCOX0lZsRy">
                 <div class="stat-card" data-page-node-id="Ml3zDAwWKYHHE8H8cuhv1s">
                     <div class="number" id="profit-stat-ebit" data-page-node-id="5wNh889q7CIoq0HiZaudSQ">0</div>
-                    <div class="label" data-page-node-id="cSzdbBpjoAoEFwzWo5WqYN">EBITDA</div>
+                    <div class="label" data-page-node-id="cSzdbBpjoAoEFwzWo5WqYN">息税折旧前利润</div>
                     <div class="est-note" data-page-node-id="RQ6X1I4Zgit0jjsQXsSMqd">全月预估 <span id="profit-stat-ebit-est" data-page-node-id="u1Vc2OuUr55w4lkGlPYR4q">¥0</span></div>
                 </div>
                 <div class="stat-card" data-page-node-id="vmVa4KIr9n6dlMO0brSxrQ">
@@ -2004,7 +2005,7 @@
                 </div>
             </div>
             <div class="profit-formula-bar" data-page-node-id="0X3oGDAk5JPkKyEvBOWL0t">
-                考核利润 = EBITDA − 资金成本；净利润 = 考核利润 − 折旧
+                考核利润 = 息税折旧前利润 − 资金成本；净利润 = 考核利润 − 折旧
             </div>
         </div>
 
@@ -2030,8 +2031,8 @@
                                 <th class="right" data-page-node-id="jSGmMRotH44aFEQAfK6jnR">提成</th>
                                 <th class="right" data-page-node-id="MgFtManFeeCol">管理费用</th>
                                 <th class="right" data-page-node-id="hJsDr1rgajZmIwz8DCZVbB">单方成本</th>
-                                <th class="right" width="88" style="width:88px" data-page-node-id="ebbvmAQfSYwecY5NBpFHDu">单方EBITDA</th>
-                                <th class="right" width="88" style="width:88px" data-page-node-id="ZZLgY9AzOJI3i9zSGPPo9E">EBITDA合计</th>
+                                <th class="right" width="116" style="width:116px" data-page-node-id="ebbvmAQfSYwecY5NBpFHDu">单方息税折旧前利润</th>
+                                <th class="right" width="132" style="width:132px" data-page-node-id="ZZLgY9AzOJI3i9zSGPPo9E">息税折旧前利润合计</th>
                             </tr>
                         </thead>
                         <tbody id="profit-detail-body" data-page-node-id="BIadvOwdtttyPyU3iJFTQu">
@@ -2376,7 +2377,7 @@
 
     <!-- 版本信息 -->
     <div class="version-bar" data-page-node-id="1UBBtysdmLvbx2X97eNJY8">
-        <div class="version-tag" data-page-node-id="XoAfvGjxF1thW3lDxZFnw1">版本 v1.30.298</div>
+        <div class="version-tag" data-page-node-id="XoAfvGjxF1thW3lDxZFnw1">版本 v1.30.299</div>
         <div class="sync-chip" id="sync-state" onclick="openSyncPanel()" title="点击打开联网设置">☁️ 本地</div>
     </div>
 
@@ -5315,7 +5316,7 @@
             pHtml += `<tr><td>可入库总产量</td><td class="center">${fmtNum(whFull)}</td></tr>`;
             pHtml += `<tr><td>外贸可入库产量</td><td class="center">${fmtNum(foreignWhFull)}</td></tr>`;
             pHtml += `<tr><td>可实现总收入</td><td class="center">${fmtMoney(profit.realizableRevenue * rtCp.tf)}</td></tr>`; // 全月预估值
-            pHtml += `<tr><td>EBITDA</td><td class="center">${fmtMoney(rtCp.ebit * rtCp.tf)}</td></tr>`; // 全月预估值(实时×时间系数)
+            pHtml += `<tr><td>息税折旧前利润</td><td class="center">${fmtMoney(rtCp.ebit * rtCp.tf)}</td></tr>`; // 全月预估值(实时×时间系数)
             pHtml += `<tr><td>考核利润</td><td class="center">${fmtMoney(rtCp.assess * rtCp.tf)}</td></tr>`; // 全月预估值(实时×时间系数)
             pHtml += `<tr><td>盈亏平衡点产量</td><td class="center">${bep}</td></tr>`;
             pHtml += `</tbody></table>`;
@@ -6887,7 +6888,7 @@
             let html = `<div class="section-title collapse-toggle ${collapsed}" id="profit-history-title" onclick="toggleProfitHistory()"><span class="collapse-arrow"></span>历史数据（点「编辑」可切回该月修改）</div>`;
             html += `<div class="collapse-content ${collapsed}" id="profit-history-content">`;
             html += '<div class="card"><div class="profit-scroll"><table class="profit-table profit-history-table">';
-            html += '<thead><tr><th class="center">月份</th><th class="center">可入库总产量</th><th class="center">人工总额</th><th class="center">总人数</th><th class="center">总人工单价</th><th class="center">可实现总收入</th><th class="center">EBITDA</th><th class="center">考核利润</th><th class="center">净利润</th><th class="center">操作</th></tr></thead><tbody>';
+            html += '<thead><tr><th class="center">月份</th><th class="center">可入库总产量</th><th class="center">人工总额</th><th class="center">总人数</th><th class="center">总人工单价</th><th class="center">可实现总收入</th><th class="center">息税折旧前利润</th><th class="center">考核利润</th><th class="center">净利润</th><th class="center">操作</th></tr></thead><tbody>';
             history.forEach(name => {
                 const p = calcMonthProfit(name);
                 html += `<tr>
@@ -7942,7 +7943,7 @@
         }
 
         // ============ 强制刷新 ============
-        const APP_VERSION = 'v1.30.298';
+        const APP_VERSION = 'v1.30.299';
 
         function forceRefresh() {
             if ('caches' in window) {
