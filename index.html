@@ -761,8 +761,9 @@
         #page-yield .stat-card .label.est-label { color: #c4753b; }
         /* 产量质量表格行高压缩 */
         #page-yield table th, #page-yield table td { padding: 4px 6px; font-size: 14px; }
-        /* 修正数据行：同一天超过 2 条后的记录用带颜色字体区分 */
-        tr.yield-correction-row td { color: #e65100; font-weight: 600; }
+        /* 修正数据行：同一天多条记录——产量第 3 条起、工段扣款第 2 条起，用橙色字体区分（!important 压过扣款占比单元格的 inline #888；输入框文字同步橙色） */
+        tr.yield-correction-row td { color: #e65100 !important; font-weight: 600; }
+        tr.yield-correction-row input.deduction-input { color: #e65100 !important; font-weight: 600; }
         /* 订单履约：大屏两列布局，左列期初/过程累计/结果指标，右列批量录入/历史录入/差异调整；
            左右两列整体等高等齐（顶部/底部同高），卡片按内容自然高度，不强制拉伸，空白留在短列底部 */
         .order-grid-2x2 {
@@ -2361,7 +2362,7 @@
 
     <!-- 版本信息 -->
     <div class="version-bar" data-page-node-id="1UBBtysdmLvbx2X97eNJY8">
-        <div class="version-tag" data-page-node-id="XoAfvGjxF1thW3lDxZFnw1">版本 v1.30.308</div>
+        <div class="version-tag" data-page-node-id="XoAfvGjxF1thW3lDxZFnw1">版本 v1.30.309</div>
         <div class="sync-chip" id="sync-state" onclick="openSyncPanel()" title="点击打开联网设置">☁️ 本地</div>
     </div>
 
@@ -3727,6 +3728,7 @@
             const labelEl = document.getElementById('deduction-month-label');
             if (labelEl) labelEl.textContent = yieldData.currentMonth || '';
             const recs = [...m.deductions].sort((a, b) => (parseInt(a.date, 10) || 0) - (parseInt(b.date, 10) || 0));
+            const daySeq = {}; // 同一天第 2 条起=修正（调整）数据，橙色标注（工段扣款口径：1 条正常 + 1 条调整）
             if (recs.length === 0) {
                 box.innerHTML = '<div class="analysis-empty">暂无每日扣款记录，点右上「+ 添加日期」开始录入（列=各工段，只填扣款绝对值，占比自动算）。</div>';
                 return;
@@ -3734,12 +3736,15 @@
             let h = '<div class="table-scroll"><table><thead><tr><th>日期</th>' + DEPT_NAMES.map(n => `<th class="right">${n}</th>`).join('') + '<th style="width:40px;"></th></tr></thead><tbody>';
             recs.forEach(r => {
                 const dayTotal = DEPT_NAMES.reduce((s2, n) => s2 + (parseFloat(r.values && r.values[n]) || 0), 0);
-                h += `<tr><td rowspan="2">${r.date}日</td>`;
+                const seq = (daySeq[r.date] = (daySeq[r.date] || 0) + 1);
+                const isCorr = seq > 1; // 工段扣款：同一天第 2 条起=修正/调整（与产量每日明细第 3 条起口径不同，随各模块录入习惯）
+                const corrCls = isCorr ? ' class="yield-correction-row" title="修正数据（当天第 ' + seq + ' 条）"' : '';
+                h += `<tr${corrCls}><td rowspan="2">${r.date}日</td>`;
                 h += DEPT_NAMES.map(n => `<td class="right"><input type="number" class="deduction-input" id="dd-${r.id}-${n}" min="0" value="${fmtNum((r.values && r.values[n]) || 0)}" onchange="onDeductionCellEdit('${r.id}','${n}')"></td>`).join('');
                 h += `<td rowspan="2"><button class="btn-icon" onclick="deleteDeductionDay('${r.id}')" title="删除">🗑️</button></td></tr>`;
                 // v1.30.284：不再放「占比」标签 td——上一行日期/删除格 rowspan=2 已占住本行第 1、7 列，
                 // 多出的标签格会把全部占比挤右一列、最后一个挤进表格外（错位根因）
-                h += '<tr class="calc-row">';
+                h += '<tr class="calc-row' + (isCorr ? ' yield-correction-row' : '') + '">';
                 h += DEPT_NAMES.map(n => {
                     const v = parseFloat(r.values && r.values[n]) || 0;
                     return `<td class="right" style="color:#888;">${dayTotal > 0 ? fmtPct(v / dayTotal * 100) : '0.00%'}</td>`;
@@ -7948,7 +7953,7 @@
         }
 
         // ============ 强制刷新 ============
-        const APP_VERSION = 'v1.30.308';
+        const APP_VERSION = 'v1.30.309';
 
         function forceRefresh() {
             if ('caches' in window) {
